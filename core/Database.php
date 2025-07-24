@@ -7,6 +7,7 @@ use PDOException;
 class Database
 {
     private $pdo;
+    private static $instance;
 
     private function __construct(array $config)
     {
@@ -28,6 +29,23 @@ class Database
         } catch (PDOException $e) {
             die('Database connection failed: ' . htmlspecialchars($e->getMessage()));
         }
+    }
+
+    /**
+     * Returns the singleton Database instance.
+     */
+    public static function getInstance(): Database
+    {
+        if (! self::$instance) {
+            $config = require __DIR__ . '/../config/database.php';
+            // ensure directory exists
+            if ($config['driver'] === 'sqlite') {
+                $dir = dirname($config['database']);
+                if (! is_dir($dir)) mkdir($dir, 0755, true);
+            }
+            self::$instance = new self($config);
+        }
+        return self::$instance;
     }
 
     public function pdo(): PDO
