@@ -72,4 +72,16 @@ abstract class Model
         }
         return $this;
     }
+
+    /**
+     * Delete this record from the database.
+     *
+     * @return bool True on success, false otherwise.
+     */
+    public function delete(): bool
+    {
+        $db = Database::getInstance()->pdo();
+        $stmt = $db->prepare("DELETE FROM " . static::$table . " WHERE " . static::$primaryKey . " = :id");
+        return $stmt->execute(['id' => $this->{static::$primaryKey}]);
+    }
 }
