@@ -7,6 +7,7 @@ use PDO;
 abstract class Model
 {
     protected static $table;
+    protected static $primaryKey = 'id';
 
     /**
      * Get all records, optionally filtered by criteria.
@@ -26,5 +27,19 @@ abstract class Model
         $stmt = $db->prepare($sql);
         $stmt->execute($criteria);
         return $stmt->fetchAll(PDO::FETCH_CLASS, static::class);
+    }
+
+    /**
+     * Find a record by primary key.
+     *
+     * @param mixed $id The value of the primary key.
+     * @return static|null Returns the model instance or null if not found.
+     */
+    public static function find($id)
+    {
+        $db = Database::getInstance()->pdo();
+        $stmt = $db->prepare("SELECT * FROM " . static::$table . " WHERE " . static::$primaryKey . " = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetchObject(static::class);
     }
 }
