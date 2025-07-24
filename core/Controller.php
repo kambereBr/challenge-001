@@ -4,6 +4,31 @@ namespace Core;
 
 abstract class Controller
 {
+    protected $currentUser;
+
+    public function __construct()
+    {
+        session_start();
+        if (empty($_SESSION['user_id'])) {
+            $this->redirect('/login');
+        }
+        $this->currentUser = \App\Models\User::find($_SESSION['user_id']);
+    }
+
+    /**
+     * Authorize access for given user roles.
+     *
+     * @param array $roles
+     */
+    protected function authorize(array $roles): void
+    {
+        if (! in_array($this->currentUser->role, $roles)) {
+            http_response_code(403);
+            echo '403 Forbidden';
+            exit;
+        }
+    }
+
     /**
      * Render a view template with data.
      *
