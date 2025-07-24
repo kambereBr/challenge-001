@@ -29,4 +29,9 @@ class Database
             die('Database connection failed: ' . htmlspecialchars($e->getMessage()));
         }
     }
+
+    public function pdo(): PDO
+    {
+        return $this->pdo;
+    }
 }
