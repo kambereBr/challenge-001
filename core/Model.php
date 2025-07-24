@@ -84,4 +84,21 @@ abstract class Model
         $stmt = $db->prepare("DELETE FROM " . static::$table . " WHERE " . static::$primaryKey . " = :id");
         return $stmt->execute(['id' => $this->{static::$primaryKey}]);
     }
+
+    /**
+     * "Belongs to" relationship.
+     *
+     * @param string $relatedClass Related model class.
+     * @param string $foreignKey Foreign key on this model.
+     * @param string $ownerKey Primary key on related model.
+     * @return object|null
+     */
+    public function belongsTo(string $relatedClass, string $foreignKey, string $ownerKey = 'id')
+    {
+        $db = Database::getInstance()->pdo();
+        $table = $relatedClass::$table;
+        $stmt = $db->prepare("SELECT * FROM $table WHERE $ownerKey = :val");
+        $stmt->execute(['val' => $this->{$foreignKey}]);
+        return $stmt->fetchObject($relatedClass);
+    }
 }
