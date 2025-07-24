@@ -86,10 +86,22 @@ abstract class Model
     /**
      * Delete this record from the database.
      *
+     * @param int $deletedBy ID of the user performing the deletion.
+     * If soft delete is enabled, this will set the deleted_at and deleted_by fields.
      * @return bool True on success, false otherwise.
      */
-    public function delete(): bool
+
+    public function delete(int $deletedBy): bool
     {
+        if (static::$softDelete) {
+            $this->deleted_at = date('Y-m-d H:i:s');
+            if ($deletedBy !== null) {
+                $this->deleted_by = $deletedBy;
+            }
+            $this->updated_at = date('Y-m-d H:i:s');
+            $this->save();
+            return true;
+        }
         $db = Database::getInstance()->pdo();
         $stmt = $db->prepare("DELETE FROM " . static::$table . " WHERE " . static::$primaryKey . " = :id");
         return $stmt->execute(['id' => $this->{static::$primaryKey}]);
