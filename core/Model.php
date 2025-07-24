@@ -44,7 +44,11 @@ abstract class Model
     public static function find($id)
     {
         $db = Database::getInstance()->pdo();
-        $stmt = $db->prepare("SELECT * FROM " . static::$table . " WHERE " . static::$primaryKey . " = :id");
+        $sql = "SELECT * FROM " . static::$table . " WHERE " . static::$primaryKey . " = :id";
+        if (static::$softDelete) {
+            $sql .= " AND deleted_at IS NULL";
+        }
+        $stmt = $db->prepare($sql);
         $stmt->execute(['id' => $id]);
         return $stmt->fetchObject(static::class);
     }
