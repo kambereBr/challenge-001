@@ -42,4 +42,34 @@ abstract class Model
         $stmt->execute(['id' => $id]);
         return $stmt->fetchObject(static::class);
     }
+
+    /**
+     * Save the model to the database (insert or update).
+     *
+     * @return $this Returns the model instance after saving.
+     */
+    public function save()
+    {
+        $db = Database::getInstance()->pdo();
+        $props = get_object_vars($this);
+
+        if (isset($this->{static::$primaryKey})) {
+            // Update existing record
+            $sets = array_filter(array_keys($props), fn($k) => $k !== static::$primaryKey);
+            $sql = "UPDATE " . static::$table . " SET "
+                . implode(', ', array_map(fn($k) => "$k = :$k", $sets))
+                . " WHERE " . static::$primaryKey . " = :" . static::$primaryKey;
+        } else {
+            // Create new record
+            $keys = array_keys($props);
+            $sql = "INSERT INTO " . static::$table
+                . " (" . implode(', ', $keys) . ") VALUES (:" . implode(', :', $keys) . ")";
+        }
+        $stmt = $db->prepare($sql);
+        $stmt->execute($props);
+        if (! isset($this->{static::$primaryKey})) {
+            $this->{static::$primaryKey} = (int)$db->lastInsertId();
+        }
+        return $this;
+    }
 }
