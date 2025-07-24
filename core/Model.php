@@ -8,6 +8,7 @@ abstract class Model
 {
     protected static $table;
     protected static $primaryKey = 'id';
+    protected static $softDelete = true;
 
     /**
      * Get all records, optionally filtered by criteria.
@@ -19,10 +20,15 @@ abstract class Model
     {
         $db = Database::getInstance()->pdo();
         $sql = "SELECT * FROM " . static::$table;
-        if ($criteria) {
-            // Build the WHERE clause based on criteria
-            $conds = array_map(fn($c) => "$c = :$c", array_keys($criteria));
-            $sql .= ' WHERE ' . implode(' AND ', $conds);
+        $where = [];
+        if (static::$softDelete) {
+            $where[] = "deleted_at IS NULL";
+        }
+        foreach ($criteria as $column => $value) {
+            $where[] = "$column = :$column";
+        }
+        if ($where) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
         }
         $stmt = $db->prepare($sql);
         $stmt->execute($criteria);
