@@ -9,5 +9,14 @@
             <option <?= $user->role==='super_admin'?'selected':'' ?> value="super_admin">Super Admin</option>
         </select>
     </label><br>
+    <label>Store: 
+        <select name="store_id">
+            <?php foreach ($stores as $store): ?>
+                <option value="<?= $store->id ?>" <?= $user->store_id === $store->id ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($store->name) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </label><br>
     <button type="submit">Update</button>
 </form>
