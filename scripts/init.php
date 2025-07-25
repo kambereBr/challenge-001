@@ -36,6 +36,7 @@ foreach ($files as $file) {
     }
     /** @var MigrationInterface $migration */
     $migration = new $fqcn();
+    $migration->down(); // Ensure down method is called first to reset state (this drops tables)
     $migration->up();
     echo "Migrated: {$fqcn}\n";
 }
