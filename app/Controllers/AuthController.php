@@ -9,6 +9,7 @@ class AuthController extends Controller
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->verifyCsrf();
             $user = User::all(['username'=>$_POST['username']])[0] ?? null;
             if ($user && password_verify($_POST['password'], $user->password_hash)) {
                 $_SESSION['user_id'] = $user->id;
