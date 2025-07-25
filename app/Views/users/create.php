@@ -9,5 +9,12 @@
             <option value="super_admin">Super Admin</option>
         </select>
     </label><br>
+    <label>Store: 
+        <select name="store_id">
+            <?php foreach ($stores as $store): ?>
+                <option value="<?= $store->id ?>"><?= htmlspecialchars($store->name) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </label><br>
     <button type="submit">Save</button>
 </form>
