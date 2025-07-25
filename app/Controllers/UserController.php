@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use Core\Controller;
 use App\Models\User;
+use App\Models\Store;
 
 class UserController extends Controller
 {
@@ -16,7 +17,10 @@ class UserController extends Controller
     public function create()
     {
         $this->authorize(['super_admin']);
-        $this->view('users/create');
+        $stores = $this->currentUser->role === 'super_admin'
+            ? Store::all()
+            : [$this->currentUser->store];
+        $this->view('users/create', ['stores' => $stores]);
     }
 
     public function store()
@@ -37,7 +41,10 @@ class UserController extends Controller
     {
         $this->authorize(['super_admin']);
         $user = User::find($id);
-        $this->view('users/edit', ['user' => $user]);
+        $stores = $this->currentUser->role === 'super_admin'
+            ? Store::all()
+            : [$this->currentUser->store];
+        $this->view('users/edit', ['user' => $user, 'stores' => $stores]);
     }
 
     public function update($id)
