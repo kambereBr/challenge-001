@@ -14,5 +14,14 @@
             <option value="discontinued" <?= $weapon->status === 'discontinued' ? 'selected' : '' ?>>Discontinued</option>
         </select>
     </label><br>
+    <label>Store: 
+        <select name="store_id">
+            <?php foreach ($stores as $store): ?>
+                <option value="<?= $store->id ?>" <?= $weapon->store_id === $store->id ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($store->name) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </label><br>
     <button type="submit">Update</button>
 </form>
