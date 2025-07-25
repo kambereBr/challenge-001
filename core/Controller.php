@@ -73,7 +73,12 @@ abstract class Controller
     protected function view(string $template, array $data = []): void
     {
         extract($data, EXTR_SKIP);
+        // include global header
+        include __DIR__ . '/../app/Views/layout/header.php';
+        // include the specific view template
         require __DIR__ . '/../app/Views/' . $template . '.php';
+        // include global footer
+        include __DIR__ . '/../app/Views/layout/footer.php';
     }
 
     /**
