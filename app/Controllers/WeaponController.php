@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use Core\Controller;
 use App\Models\Weapon;
+use App\Models\Store;
 
 class WeaponController extends Controller
 {
@@ -15,7 +16,10 @@ class WeaponController extends Controller
     public function create()
     {
         $this->authorize(['super_admin', 'store_user']);
-        $this->view('weapons/create');
+        $stores = $this->currentUser->role === 'super_admin'
+            ? Store::all()
+            : [$this->currentUser->store];
+        $this->view('weapons/create', ['stores' => $stores]);
     }
 
     public function store()
@@ -45,7 +49,10 @@ class WeaponController extends Controller
             http_response_code(403);
             exit;
         }
-        $this->view('weapons/edit', ['weapon' => $weapon]);
+        $stores = $this->currentUser->role === 'super_admin'
+            ? Store::all()
+            : [$this->currentUser->store];
+        $this->view('weapons/edit', ['weapon' => $weapon, 'stores' => $stores]);
     }
 
     public function update($id)
