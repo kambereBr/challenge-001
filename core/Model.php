@@ -3,6 +3,7 @@ namespace Core;
 
 use Core\Database;
 use PDO;
+use App\Models\User;
 
 abstract class Model
 {
@@ -51,6 +52,39 @@ abstract class Model
         $stmt = $db->prepare($sql);
         $stmt->execute(['id' => $id]);
         return $stmt->fetchObject(static::class);
+    }
+
+    /**
+     * Get all records accessible to the user.
+     *
+     * @param User $user
+     * @return array
+     */
+    public static function allForUser(User $user): array
+    {
+        if ($user->role === 'super_admin') {
+            return static::all();
+        }
+        return static::all(['store_id' => $user->store_id]);
+    }
+
+    /**
+     * Find a record by ID if accessible by the user.
+     *
+     * @param mixed $id
+     * @param User $user
+     * @return static|null
+     */
+    public static function findForUser($id, User $user)
+    {
+        $record = static::find($id);
+        if (! $record) {
+            return null;
+        }
+        if ($user->role === 'super_admin' || $record->store_id === $user->store_id) {
+            return $record;
+        }
+        return null;
     }
 
     /**
