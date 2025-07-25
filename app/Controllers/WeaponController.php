@@ -30,7 +30,7 @@ class WeaponController extends Controller
         $weapon->caliber = $_POST['caliber'] ?: null;
         $weapon->serial_number = $_POST['serial_number'];
         $weapon->price = $_POST['price'] ?: 0.0;
-        $weapon->in_stock = isset($_POST['in_stock']) ? 1 : 0;
+        $weapon->in_stock = $_POST['in_stock'] ?: 0;
         $weapon->status = $_POST['status'] ?: 'available';
         $weapon->created_at = date('Y-m-d H:i:s');
         $weapon->updated_at = date('Y-m-d H:i:s');
@@ -60,7 +60,7 @@ class WeaponController extends Controller
         $weapon->caliber = $_POST['caliber'] ?: null;
         $weapon->serial_number = $_POST['serial_number'];
         $weapon->price = $_POST['price'] ?: 0.0;
-        $weapon->in_stock = isset($_POST['in_stock']) ? 1 : 0;
+        $weapon->in_stock = $_POST['in_stock'] ?: 0;
         $weapon->status = $_POST['status'] ?: 'available';
         $weapon->updated_at = date('Y-m-d H:i:s');
         $weapon->save();
