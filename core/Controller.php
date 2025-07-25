@@ -2,6 +2,9 @@
 
 namespace Core;
 
+use App\Controllers\AuthController;
+use App\Models\User;
+
 abstract class Controller
 {
     protected $currentUser;
@@ -9,10 +12,42 @@ abstract class Controller
     public function __construct()
     {
         session_start();
-        if (empty($_SESSION['user_id'])) {
+        // Ensure CSRF token exists
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        if (empty($_SESSION['user_id']) && ! ($this instanceof AuthController)) {
             $this->redirect('/login');
         }
-        $this->currentUser = \App\Models\User::find($_SESSION['user_id']);
+        if (! empty($_SESSION['user_id'])) {
+            $this->currentUser = User::find($_SESSION['user_id']);
+        }
+    }
+
+    /**
+     * Generate hidden field for forms to include CSRF token.
+     */
+    protected function csrfField(): string
+    {
+        $token = htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8');
+        return "<input type='hidden' name='csrf_token' value='$token'>";
+    }
+
+    /**
+     * Verify the CSRF token from the request.
+     *
+     * @throws \Exception if the CSRF token is invalid
+     */
+    protected function verifyCsrf(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $token = $_POST['csrf_token'] ?? '';
+            if (! hash_equals($_SESSION['csrf_token'], $token)) {
+                http_response_code(400);
+                echo 'Invalid CSRF token';
+                exit;
+            }
+        }
     }
 
     /**
