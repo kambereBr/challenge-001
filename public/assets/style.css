@@ -4,27 +4,52 @@ body {
   line-height: 1.6;
   background: #f4f4f4;
 }
-header, nav, main, footer { display: block; }
+header, nav, main, footer {
+  display: block;
+}
 .container {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem 0;
 }
-nav { background: #333; }
+
+nav {
+  width: 100%;
+  background: #333;
+}
 nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+}
+nav li {
+  margin: 0;
 }
 nav a {
   color: #fff;
   text-decoration: none;
   padding: 0.75rem 1rem;
 }
-nav a:hover { background: #444; }
+nav a:hover {
+  background: #444;
+}
+
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  background: #333;
+  color: #fff;
+  padding: 0.75rem 0;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -35,14 +60,38 @@ th, td {
   border: 1px solid #ddd;
   text-align: left;
 }
-@media (max-width:600px) {
-  table, thead, tbody, th, td, tr { display: block; }
-  td { border: none; position: relative; padding-left: 50%; }
+th {
+  background: #333;
+  color: #fff;
+}
+tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+@media (max-width: 600px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+  th {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  tr {
+    margin-bottom: 1rem;
+  }
+  td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+  }
   td:before {
-    position: absolute; top: 0; left: 0;
-    width: 45%; padding-right: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 45%;
+    padding-right: 10px;
     white-space: nowrap;
     content: attr(data-label);
     font-weight: bold;
   }
-} 
+}
