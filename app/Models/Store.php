@@ -11,4 +11,9 @@ class Store extends Model
     {
         return User::all(['store_id' => $this->id]);
     }
+
+    public function weapons(): array
+    {
+        return Weapon::all(['store_id' => $this->id]);
+    }
 }
