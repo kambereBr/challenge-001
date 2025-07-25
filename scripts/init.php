@@ -40,4 +40,7 @@ foreach ($files as $file) {
     echo "Migrated: {$fqcn}\n";
 }
 
+// Run seed script
+require __DIR__ . '/../app/Migrations/seed/seed.php';
+
 echo "Initialization complete.\n";
