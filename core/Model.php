@@ -99,9 +99,9 @@ abstract class Model
 
         if (isset($this->{static::$primaryKey})) {
             // Update existing record
-            $sets = array_filter(array_keys($props), fn($k) => $k !== static::$primaryKey);
+            $sets = array_filter(array_keys($props), function($k) { return $k !== static::$primaryKey; });
             $sql = "UPDATE " . static::$table . " SET "
-                . implode(', ', array_map(fn($k) => "$k = :$k", $sets))
+                . implode(', ', array_map(function($k) { return "$k = :$k"; }, $sets))
                 . " WHERE " . static::$primaryKey . " = :" . static::$primaryKey;
         } else {
             // Create new record
