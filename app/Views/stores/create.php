@@ -1,14 +1,34 @@
 <h1>Create Store</h1>
-<form method="post" action="/stores/store">
-    <?= $this->csrfField() ?>
-    <label>Name: <input name="name"></label><br>
-    <label>Slug: <input name="slug"></label><br>
-    <label>Address Line 1: <input name="address_line1"></label><br>
-    <label>Address Line 2: <input name="address_line2"></label><br>
-    <label>City: <input name="city"></label><br>
-    <label>State/Region: <input name="state_region"></label><br>
-    <label>Country: <input name="country"></label><br>
-    <label>Phone: <input name="phone"></label><br>
-    <label>Email: <input name="email"></label><br>
-    <button type="submit">Save</button>
+<form class="form-grid" method="post" action="/stores/store">
+    <div class="form-group">
+        <?= $this->csrfField() ?>
+        <label for="name">Name:</label>
+        <input id="name" name="name" required>
+
+        <label for="slug">Slug:</label>
+        <input id="slug" name="slug" required>
+
+        <label for="address_line1">Address Line 1:</label>
+        <input id="address_line1" name="address_line1" required>
+
+        <label for="address_line2">Address Line 2:</label>
+        <input id="address_line2" name="address_line2">
+
+        <label for="city">City:</label>
+        <input id="city" name="city" required>
+
+        <label for="state_region">State/Region:</label>
+        <input id="state_region" name="state_region">
+
+        <label for="country">Country:</label>
+        <input id="country" name="country">
+
+        <label for="phone">Phone:</label>
+        <input id="phone" name="phone">
+
+        <label for="email">Email:</label>
+        <input id="email" name="email">
+
+        <button type="submit">Save</button>
+    </div>
 </form>
