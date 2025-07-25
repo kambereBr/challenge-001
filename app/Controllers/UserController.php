@@ -59,7 +59,7 @@ class UserController extends Controller
     {
         $this->authorize(['super_admin']);
         $user = User::find($id);
-        $user->delete(true); // Soft delete
+        $user->delete($this->currentUser->id); // Soft delete
         $this->redirect('/users');
     }
 }
