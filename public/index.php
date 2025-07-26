@@ -21,6 +21,7 @@ $routes = [
     'GET|stores/edit/(\d+)'   => ['App\Controllers\StoreController', 'edit'],
     'POST|stores/update/(\d+)' => ['App\Controllers\StoreController', 'update'],
     'POST|stores/delete/(\d+)' => ['App\Controllers\StoreController', 'destroy'],
+    'GET|stores/show/(\d+)'    => ['App\Controllers\StoreController','show'],
 
     'GET|weapons'           => ['App\Controllers\WeaponController', 'index'],
     'GET|weapons/create'    => ['App\Controllers\WeaponController', 'create'],
@@ -28,6 +29,7 @@ $routes = [
     'GET|weapons/edit/(\d+)'  => ['App\Controllers\WeaponController', 'edit'],
     'POST|weapons/update/(\d+)' => ['App\Controllers\WeaponController', 'update'],
     'POST|weapons/delete/(\d+)' => ['App\Controllers\WeaponController', 'destroy'],
+    'GET|weapons/show/(\d+)'    => ['App\Controllers\WeaponController','show'],
 
     'GET|users'             => ['App\Controllers\UserController', 'index'],
     'GET|users/create'      => ['App\Controllers\UserController', 'create'],
@@ -35,6 +37,7 @@ $routes = [
     'GET|users/edit/(\d+)'    => ['App\Controllers\UserController', 'edit'],
     'POST|users/update/(\d+)'  => ['App\Controllers\UserController', 'update'],
     'POST|users/delete/(\d+)'  => ['App\Controllers\UserController', 'destroy'],
+    'GET|users/show/(\d+)'     => ['App\Controllers\UserController','show'],
 
     'GET|login'             => ['App\Controllers\AuthController', 'login'],
     'POST|login'            => ['App\Controllers\AuthController', 'login'],
