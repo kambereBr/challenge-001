@@ -23,3 +23,4 @@
         </ul>
     </nav>
     <main class="container">
+        <?php $this->displayFlash(); ?>
