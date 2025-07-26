@@ -74,6 +74,21 @@ class WeaponController extends Controller
         $this->redirect('/weapons');
     }
 
+    public function show($id)
+    {
+        $weapon = Weapon::findForUser($id, $this->currentUser);
+        if (! $weapon) {
+            http_response_code(403);
+            exit;
+        }
+        // also get its store
+        $store = $weapon->store();
+        $this->view('weapons/show', [
+          'weapon' => $weapon,
+          'store'  => $store,
+        ]);
+    }
+
     public function destroy($id)
     {
         $this->authorize(['super_admin', 'store_user']);
