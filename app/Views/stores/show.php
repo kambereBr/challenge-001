@@ -10,6 +10,9 @@
   <strong>Phone:</strong> <?= htmlspecialchars($store->phone) ?><br>
   <strong>Email:</strong> <?= htmlspecialchars($store->email) ?>
 </p>
+<p>
+  <a class="btn" href="/stores/pdf/<?= $store->id ?>" target="_blank">Print PDF</a> 
+</p>
 
 <h2>Weapons in this Store</h2>
 <?php if (count($weapons) === 0): ?>
@@ -50,6 +53,7 @@
         <td data-label="Status"><?= htmlspecialchars($w->status) ?></td>
         <td data-label="Actions">
             <a href="/weapons/show/<?= $w->id ?>">View</a> | 
+            <a class="btn" href="/weapons/pdf/<?= $w->id ?>" target="_blank">PDF</a> |
             <a href="/weapons/edit/<?= $w->id ?>">Edit</a> | 
             <form method="post" action="/weapons/delete/<?= $w->id ?>" style="display:inline;">
                 <?= $this->csrfField() ?>
