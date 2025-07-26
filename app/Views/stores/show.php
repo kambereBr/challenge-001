@@ -15,6 +15,12 @@
 <?php if (count($weapons) === 0): ?>
   <p>No weapons found.</p>
 <?php else: ?>
+  <div class="table-search">
+    <label>
+      Search:
+      <input type="text" class="table-filter" data-table="store-weapons-table" placeholder="Type to filter…">
+    </label>
+  </div>
   <table id="store-weapons-table">
     <thead>
       <tr>
