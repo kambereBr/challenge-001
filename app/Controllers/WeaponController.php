@@ -10,7 +10,14 @@ class WeaponController extends Controller
     public function index()
     {
         $weapons = Weapon::allForUser($this->currentUser);
-        $this->view('weapons/index', ['weapons' => $weapons]);
+        $ids = array_unique(array_column($weapons, 'store_id'));
+        $storesRaw = Store::whereIn('id', $ids);
+        // Convert to associative array for easier access
+        $stores = [];
+        foreach ($storesRaw as $s) {
+            $stores[$s->id] = $s;
+        }
+        $this->view('weapons/index', ['weapons' => $weapons, 'stores' => $stores]);
     }
 
     public function create()
@@ -62,6 +69,7 @@ class WeaponController extends Controller
             http_response_code(403);
             exit;
         }
+        $weapon->store_id = $_POST['store_id'];
         $weapon->name = $_POST['name'];
         $weapon->type = $_POST['type'];
         $weapon->caliber = $_POST['caliber'] ?: null;
