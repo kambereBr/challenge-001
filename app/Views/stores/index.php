@@ -1,7 +1,13 @@
 <h1>Stores</h1>
 <a href="/stores/create">+ New Store</a>
 <a href="/weapons">View Weapons</a>
-<table>
+<div class="table-search">
+  <label>
+    Search:
+    <input type="text" class="table-filter" data-table="stores-table" placeholder="Type to filter…">
+  </label>
+</div>
+<table id="stores-table">
     <thead>
         <tr>
             <th class="sortable">ID</th>
