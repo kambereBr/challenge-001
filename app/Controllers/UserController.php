@@ -4,6 +4,7 @@ namespace App\Controllers;
 use Core\Controller;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Weapon;
 
 class UserController extends Controller
 {
@@ -60,6 +61,25 @@ class UserController extends Controller
         $user->updated_at = date('Y-m-d H:i:s');
         $user->save();
         $this->redirect('/users');
+    }
+
+    public function show($id)
+    {
+        $this->authorize(['super_admin']); // only super can view arbitrary users
+        $user = User::find($id);
+        if (! $user) {
+            http_response_code(404);
+            exit;
+        }
+        // if user is a store_user, list that store’s weapons
+        $weapons = [];
+        if ($user->role === 'store_user' && $user->store_id) {
+            $weapons = Weapon::all(['store_id' => $user->store_id]);
+        }
+        $this->view('users/show', [
+          'user'    => $user,
+          'weapons' => $weapons,
+        ]);
     }
 
     public function destroy($id)
