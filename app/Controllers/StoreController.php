@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Core\Controller;
 use App\Models\Store;
+use Core\PDFService;
 
 class StoreController extends Controller
 {
@@ -165,5 +166,75 @@ class StoreController extends Controller
 
         $this->setSuccess('Store “'.htmlspecialchars($store->name).'” deleted successfully.');       
         $this->redirect('/stores');
+    }
+
+    public function pdf($id)
+    {
+        $store = Store::findForUser($id, $this->currentUser);
+        if (! $store) {
+            $this->setError('Store not found for PDF generation.');
+            return $this->redirect('/stores');
+        }
+        $weapons = $store->weapons();
+        PDFService::detail(
+            "store_{$store->id}.pdf",
+            "Store Details Report: {$store->name}",
+            [
+                'Name' => $store->name,
+                'Slug' => $store->slug,
+                'Address' => $store->address_line1 . ($store->address_line2 ? ' ' . $store->address_line2 : ''),
+                'City' => $store->city,
+                'State/Region' => $store->state_region,
+                'Country' => $store->country,
+                'Phone' => $store->phone,
+                'Email' => $store->email,
+                'Total Weapons' => count($weapons),
+            ],
+            $this->currentUser,
+            'Weapons in this Store',
+            ['ID','Name','Type','Caliber','Serial Number','Price', 'In Stock', 'Status'],
+            array_map(function($w) {
+                return [
+                    $w->id,
+                    htmlspecialchars($w->name),
+                    htmlspecialchars($w->type),
+                    htmlspecialchars($w->caliber),
+                    htmlspecialchars($w->serial_number),
+                    '$'.number_format($w->price,2),
+                    htmlspecialchars($w->in_stock),
+                    htmlspecialchars($w->status),
+                ];
+            }, $store->weapons())
+        );
+    }
+
+    // Bulk PDF of all stores
+    public function pdfAll()
+    {
+        $stores = Store::allForUser($this->currentUser);
+        if (count($stores) === 0) {
+            $this->setError('No stores found for PDF generation.');
+            return $this->redirect('/stores');
+        }
+        PDFService::list(
+            'stores_report.pdf',
+            'All Stores Report',
+            ['#','Name','Slug','Address','City','State/Region','Country','Phone','Email', 'Total Weapons'],
+            array_map(function($s, $id) {
+                return [
+                    $id + 1,
+                    htmlspecialchars($s->name),
+                    htmlspecialchars($s->slug),
+                    htmlspecialchars($s->address_line1 . ($s->address_line2 ? ' ' . $s->address_line2 : '')),
+                    htmlspecialchars($s->city),
+                    htmlspecialchars($s->state_region),
+                    htmlspecialchars($s->country),
+                    htmlspecialchars($s->phone),
+                    htmlspecialchars($s->email),
+                    count($s->weapons()),
+                ];
+            }, $stores, array_keys($stores)),
+            $this->currentUser
+        );
     }
 }
