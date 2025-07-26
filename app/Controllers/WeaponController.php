@@ -32,20 +32,54 @@ class WeaponController extends Controller
     public function store()
     {
         $this->authorize(['super_admin', 'store_user']);
-        $weapon = new Weapon();
-        $weapon->store_id    = $this->currentUser->role === 'super_admin'
-                             ? $_POST['store_id']
-                             : $this->currentUser->store_id;
-        $weapon->name = $_POST['name'];
-        $weapon->type = $_POST['type'];
-        $weapon->caliber = $_POST['caliber'] ?: null;
-        $weapon->serial_number = $_POST['serial_number'];
-        $weapon->price = $_POST['price'] ?: 0.0;
-        $weapon->in_stock = $_POST['in_stock'] ?: 0;
-        $weapon->status = $_POST['status'] ?: 'available';
-        $weapon->created_at = date('Y-m-d H:i:s');
-        $weapon->updated_at = date('Y-m-d H:i:s');
-        $weapon->save();
+        $this->verifyCsrf();
+
+        $name = trim($_POST['name'] ?? '');
+        $type = trim($_POST['type'] ?? '');
+        $caliber = trim($_POST['caliber'] ?? '');
+        $serialNumber = trim($_POST['serial_number'] ?? '');
+        $price = trim($_POST['price'] ?? 0.0);
+        $inStock = trim($_POST['in_stock'] ?? 0);
+        $status = trim($_POST['status'] ?? 'available');
+        $storeId = $this->currentUser->role === 'super_admin'
+            ? $_POST['store_id']
+            : $this->currentUser->store_id;
+
+        // Validate required fields
+        $errors = $this->validate($_POST, [
+            'name' => ['required', 'max:255'],
+            'type' => ['required', 'max:100'],
+            'caliber' => ['required', 'max:100'],
+            'serial_number' => ['required', 'max:100', 'unique:weapons,serial_number'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'in_stock' => ['required', 'integer', 'min:0'],
+            'status' => ['required', 'in:available,out_of_stock,discontinued'],
+            'store_id' => ['required', 'exists:stores,id'],
+        ]);
+        if ($errors) {
+            $this->setError(implode(' ', $errors));
+            return $this->view('weapons/create', ['old' => $_POST]);
+        }
+
+        try {
+            $weapon = new Weapon();
+            $weapon->store_id = $storeId;
+            $weapon->name = $name;
+            $weapon->type = $type;
+            $weapon->caliber = $caliber;
+            $weapon->serial_number = $serialNumber;
+            $weapon->price = $price;
+            $weapon->in_stock = $inStock;
+            $weapon->status = $status;
+            $weapon->created_at = date('Y-m-d H:i:s');
+            $weapon->updated_at = date('Y-m-d H:i:s');
+            $weapon->save();
+        } catch (\Exception $e) {
+            $this->setError('Failed to create weapon: ' . $e->getMessage());
+            return $this->view('weapons/create', ['old' => $_POST]);
+        }
+
+        $this->setSuccess('Weapon "' . htmlspecialchars($name) . '" created successfully.');
         $this->redirect('/weapons');
     }
 
@@ -69,16 +103,43 @@ class WeaponController extends Controller
             http_response_code(403);
             exit;
         }
-        $weapon->store_id = $_POST['store_id'];
-        $weapon->name = $_POST['name'];
-        $weapon->type = $_POST['type'];
-        $weapon->caliber = $_POST['caliber'] ?: null;
-        $weapon->serial_number = $_POST['serial_number'];
-        $weapon->price = $_POST['price'] ?: 0.0;
-        $weapon->in_stock = $_POST['in_stock'] ?: 0;
-        $weapon->status = $_POST['status'] ?: 'available';
-        $weapon->updated_at = date('Y-m-d H:i:s');
-        $weapon->save();
+        $this->verifyCsrf();
+        $errors = $this->validate($_POST, [
+            'name' => ['required', 'max:255'],
+            'type' => ['required', 'max:100'],
+            'caliber' => ['max:100'],
+            'serial_number' => ['required', 'max:100'],
+            'price' => ['numeric', 'min:0'],
+            'in_stock' => ['integer', 'min:0'],
+            'status' => ['in:available,out_of_stock,discontinued'],
+            'store_id' => ['required', 'exists:stores,id'],
+        ]);
+        if ($errors) {
+            $stores = $this->currentUser->role === 'super_admin'
+                ? Store::all()
+                : [$this->currentUser->store];
+            $this->setError(implode(' ', $errors));
+            return $this->view('weapons/edit', ['weapon' => $weapon, 'old' => $_POST, 'stores' => $stores]);
+        }
+
+        try {
+            $weapon->store_id = $_POST['store_id'];
+            $weapon->name = $_POST['name'];
+            $weapon->type = $_POST['type'];
+            $weapon->caliber = $_POST['caliber'] ?: null;
+            $weapon->serial_number = $_POST['serial_number'];
+            $weapon->price = $_POST['price'] ?: 0.0;
+            $weapon->in_stock = $_POST['in_stock'] ?: 0;
+            $weapon->status = $_POST['status'] ?: 'available';
+            $weapon->updated_at = date('Y-m-d H:i:s');
+            $weapon->save();
+        } catch (\Exception $e) {
+            // Handle database errors
+            $this->setError('Failed to update weapon: ' . $e->getMessage());
+            return $this->view('weapons/edit', ['weapon' => $weapon, 'old' => $_POST]);
+        }
+        
+        $this->setSuccess('Weapon "' . htmlspecialchars($weapon->name) . '" updated successfully.');
         $this->redirect('/weapons');
     }
 
@@ -100,12 +161,21 @@ class WeaponController extends Controller
     public function destroy($id)
     {
         $this->authorize(['super_admin', 'store_user']);
-        $weapon = Weapon::findForUser($id, $this->currentUser);
-        if (! $weapon) {
-            http_response_code(403);
-            exit;
+        $this->verifyCsrf();
+
+        try {
+            $weapon = Weapon::findForUser($id, $this->currentUser);
+            if (! $weapon) {
+                http_response_code(403);
+                exit;
+            }
+            $weapon->delete($this->currentUser->id);
+        } catch (\Exception $e) {
+            $this->setError('Failed to delete weapon: ' . $e->getMessage());
+            return $this->redirect('/weapons');
         }
-        $weapon->delete($this->currentUser->id);
+
+        $this->setSuccess('Weapon "' . htmlspecialchars($weapon->name) . '" deleted successfully.');
         $this->redirect('/weapons');
     }
 }
