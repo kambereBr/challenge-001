@@ -1,6 +1,12 @@
 <h1>Users</h1>
 <a href="/users/create">+ New User</a>
-<table>
+<div class="table-search">
+  <label>
+    Search:
+    <input type="text" class="table-filter" data-table="users-table" placeholder="Type to filter…">
+  </label>
+</div>
+<table id="users-table">
     <thead>
         <tr>
             <th class="sortable">ID</th>
