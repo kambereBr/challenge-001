@@ -96,17 +96,39 @@ class StoreController extends Controller
         if (! $store) {
             http_response_code(403); exit;
         }
-        $store->name = $_POST['name'];
-        $store->slug = $_POST['slug'];
-        $store->address_line1 = $_POST['address_line1'];
-        $store->address_line2 = $_POST['address_line2'] ?: null;
-        $store->city = $_POST['city'];
-        $store->state_region = $_POST['state_region'];
-        $store->country = $_POST['country'];
-        $store->phone = $_POST['phone'];
-        $store->email = $_POST['email'];
-        $store->updated_at = date('Y-m-d H:i:s');
-        $store->save();
+        $this->verifyCsrf();
+        $errors = $this->validate($_POST, [
+            'name' => ['required','max:255'],
+            'slug' => ['required','alpha_dash'],
+            'address_line1' => ['required','max:255'],
+            'country' => ['required','max:100'],
+            'phone' => ['required','max:20'],
+            'email' => ['required','email','max:255'],
+        ]);
+        if ($errors) {
+            $this->setError(implode(' ', $errors));
+            return $this->view('stores/edit', ['store' => $store, 'old' => $_POST]);
+        }
+
+        try {
+            $store->name = $_POST['name'];
+            $store->slug = $_POST['slug'];
+            $store->address_line1 = $_POST['address_line1'];
+            $store->address_line2 = $_POST['address_line2'] ?: null;
+            $store->city = $_POST['city'];
+            $store->state_region = $_POST['state_region'];
+            $store->country = $_POST['country'];
+            $store->phone = $_POST['phone'];
+            $store->email = $_POST['email'];
+            $store->updated_at = date('Y-m-d H:i:s');
+            $store->save();
+        } catch (\PDOException $e) {
+            // Handle database errors
+            $this->setError('Failed to update store: ' . $e->getMessage());
+            return $this->view('stores/edit', ['store' => $store, 'old' => $_POST]);
+        }
+
+        $this->setSuccess('Store “'.htmlspecialchars($store->name).'” updated successfully.');
         $this->redirect('/stores');
     }
 
@@ -128,8 +150,20 @@ class StoreController extends Controller
     public function destroy($id)
     {
         $this->authorize(['super_admin']);
-        $store = Store::find($id);
-        $store->delete($this->currentUser->id);
+        $this->verifyCsrf();
+        try {
+            $store = Store::find($id);
+            if (! $store) {
+                http_response_code(404);
+                exit;
+            }
+            $store->delete($this->currentUser->id);
+        } catch (\PDOException $e) {
+            $this->setError('Failed to delete store: ' . $e->getMessage());
+            $this->redirect('/stores');
+        }
+
+        $this->setSuccess('Store “'.htmlspecialchars($store->name).'” deleted successfully.');       
         $this->redirect('/stores');
     }
 }
