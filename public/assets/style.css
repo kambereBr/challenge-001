@@ -115,6 +115,32 @@ footer {
   padding: 0.75rem 0;
 }
 
+/* Sortable column cursor + default indicator */
+th.sortable {
+  cursor: pointer;
+  position: relative;
+}
+th.sortable::after {
+  content: '↕';
+  font-size: 0.7em;
+  color: #ccc;
+  position: absolute;
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+th.sortable.asc::after {
+  content: '▲';
+  color: #fff;
+}
+
+th.sortable.desc::after {
+  content: '▼';
+  color: #fff;
+}
+/* End of sortable columns styles */
+
 @media (max-width: 480px) {
   .form-grid {
     grid-template-columns: 1fr;
