@@ -4,6 +4,7 @@ namespace App\Controllers;
 use Core\Controller;
 use App\Models\Weapon;
 use App\Models\Store;
+use Core\PDFService;
 
 class WeaponController extends Controller
 {
@@ -177,5 +178,62 @@ class WeaponController extends Controller
 
         $this->setSuccess('Weapon "' . htmlspecialchars($weapon->name) . '" deleted successfully.');
         $this->redirect('/weapons');
+    }
+
+    // Single-weapon detail PDF
+    public function pdf($id)
+    {
+        $weapon = Weapon::findForUser($id, $this->currentUser);
+        $store = $weapon->store();
+        PDFService::detail(
+            "weapon_{$weapon->id}.pdf",
+            'Weapon Details Report',
+            [
+                'ID' => $weapon->id,
+                'Name' => htmlspecialchars($weapon->name),
+                'Type' => htmlspecialchars($weapon->type),
+                'Caliber' => htmlspecialchars($weapon->caliber),
+                'Serial Number' => htmlspecialchars($weapon->serial_number),
+                'Price' => '$' . number_format($weapon->price, 2),
+                'In Stock' => $weapon->in_stock,
+                'Status' => htmlspecialchars($weapon->status),
+                'Store' => isset($store) ? htmlspecialchars($store->name) : '—',
+                'Created At' => $weapon->created_at,
+            ],
+            $this->currentUser
+        );
+    }
+
+
+    // Bulk PDF of all weapons (scoped)
+    public function pdfAll()
+    {
+        $weapons = Weapon::allForUser($this->currentUser);
+        $ids = array_unique(array_column($weapons, 'store_id'));
+        $storesRaw = Store::whereIn('id', $ids);
+        $stores = [];
+        foreach ($storesRaw as $s) {
+            $stores[$s->id] = $s->name;
+        }
+
+        PDFService::list(
+            'weapons_report.pdf',
+            'All Weapons Report',
+            ['#','Name','Type','Caliber','Serial Number','Price','In Stock','Status','Store'],
+            array_map(function($w, $i) use ($stores) {
+                return [
+                    $i + 1,
+                    $w->name,
+                    $w->type,
+                    $w->caliber,
+                    $w->serial_number,
+                    '$' . number_format($w->price, 2),
+                    $w->in_stock,
+                    $w->status,
+                    $stores[$w->store_id] ?? '–'
+                ];
+            }, $weapons, array_keys($weapons)),
+            $this->currentUser
+        );
     }
 }
