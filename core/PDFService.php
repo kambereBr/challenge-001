@@ -29,8 +29,11 @@ class PDFService
      * @param string $title     Title displayed in the PDF
      * @param array  $fields    Associative array label=>value
      * @param User   $user      Current user
+     * @param string|null $subTitle Optional subtitle for a secondary table
+     * @param array  $subHeaders Optional headers for the secondary table
+     * @param array  $subRows    Optional rows for the secondary table
      */
-    public static function detail(string $filename, string $title, array $fields, User $user): void
+    public static function detail(string $filename, string $title, array $fields, User $user, ?string $subTitle = null, array $subHeaders = [], array $subRows = []): void
     {
         $pdf = self::initPDF($user, $title);
         $printedAt = date('Y-m-d H:i:s');
@@ -43,6 +46,35 @@ class PDFService
                    . '</tr>';
         }
         $html .= '</table>';
+
+
+        // Optional secondary table
+        if ($subTitle && $subHeaders && $subRows) {
+            $html .= '<h2 style="color:#1F4E79;font-size:14pt;margin-top:10px;margin-bottom:8px;">'
+                   . htmlspecialchars($subTitle)
+                   . '</h2>';
+            $html .= '<table style="width:100%;border-collapse:collapse;font-size:10pt;color:#333;margin-bottom:15px;">';
+            // headers
+            $html .= '<tr>';
+            foreach ($subHeaders as $h) {
+                $html .= '<th style="color:black;padding:6px;border:1px solid #ddd;font-weight:bold;">'
+                       . htmlspecialchars($h)
+                       . '</th>';
+            }
+            $html .= '</tr>';
+            // rows
+            foreach ($subRows as $row) {
+                $html .= '<tr>';
+                foreach ($row as $cell) {
+                    $html .= '<td style="padding:6px;border:1px solid #ddd;">'
+                           . htmlspecialchars((string)$cell)
+                           . '</td>';
+                }
+                $html .= '</tr>';
+            }
+            $html .= '</table>';
+        }
+
         $html .= "<div style=\"text-align:right;font-size:8pt;color:#666;border-top:1px solid #ccc;margin-top:10px;\">"
                . "Printed by {$user->username} on {$printedAt}</div>";
 
