@@ -184,6 +184,10 @@ class WeaponController extends Controller
     public function pdf($id)
     {
         $weapon = Weapon::findForUser($id, $this->currentUser);
+        if (! $weapon) {
+            $this->setError('No weapon found for PDF generation.');
+            return $this->redirect('/weapons');
+        }
         $store = $weapon->store();
         PDFService::detail(
             "weapon_{$weapon->id}.pdf",
@@ -209,6 +213,10 @@ class WeaponController extends Controller
     public function pdfAll()
     {
         $weapons = Weapon::allForUser($this->currentUser);
+        if (count($weapons) === 0) {
+            $this->setError('No weapons found for PDF generation.');
+            return $this->redirect('/weapons');
+        }
         $ids = array_unique(array_column($weapons, 'store_id'));
         $storesRaw = Store::whereIn('id', $ids);
         $stores = [];
