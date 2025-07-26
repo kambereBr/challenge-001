@@ -1,6 +1,7 @@
 <h1>Stores</h1>
-<a href="/stores/create">+ New Store</a>
-<a href="/weapons">View Weapons</a>
+<a href="/stores/create">+ New Store</a> 
+<a href="/weapons">View Weapons</a> 
+<a class="btn" href="/stores/pdf" target="_blank">Print List in PDF</a>
 <div class="table-search">
   <label>
     Search:
@@ -39,6 +40,7 @@
                 <td>
                     <a href="/stores/edit/<?= $store->id ?>">Edit</a> | 
                     <a href="/stores/show/<?= $store->id ?>">View</a> | 
+                    <a class="btn" href="/stores/pdf/<?= $store->id ?>" target="_blank">PDF</a> |
                     <form method="post" action="/stores/delete/<?= $store->id ?>" style="display:inline;">
                         <?= $this->csrfField() ?>
                         <button type="submit">Delete</button>
