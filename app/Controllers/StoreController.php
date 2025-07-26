@@ -14,7 +14,11 @@ class StoreController extends Controller
         } else {
             $stores = Store::all(['id' => $this->currentUser->store_id]);
         }
-        $this->view('stores/index', ['stores' => $stores]);
+        $totalWeapons = [];
+        foreach ($stores as $store) {
+            $totalWeapons[$store->id] = count($store->weapons());
+        }
+        $this->view('stores/index', ['stores' => $stores, 'totalWeapons' => $totalWeapons]);
     }
 
     public function create()
@@ -69,6 +73,21 @@ class StoreController extends Controller
         $store->updated_at = date('Y-m-d H:i:s');
         $store->save();
         $this->redirect('/stores');
+    }
+
+    public function show($id)
+    {
+        $store = Store::findForUser($id, $this->currentUser);
+        if (! $store) {
+            http_response_code(403);
+            exit;
+        }
+        // fetch all weapons for this store
+        $weapons = $store->weapons();
+        $this->view('stores/show', [
+          'store'   => $store,
+          'weapons' => $weapons,
+        ]);
     }
 
     public function destroy($id)
