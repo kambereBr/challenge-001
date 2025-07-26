@@ -1,5 +1,8 @@
 <h1>Weapon: <?= htmlspecialchars($weapon->name) ?></h1>
 <p>
+  <a class="btn" href="/weapons/pdf/<?= $weapon->id ?>" target="_blank">Print PDF</a>
+</p>
+<p>
   <strong>Store:</strong>
   <a href="/stores/show/<?= $store->id ?>">
     <?= htmlspecialchars($store->name) ?>
