@@ -88,6 +88,33 @@ abstract class Model
     }
 
     /**
+     * Get records where $column is in $values.
+     *
+     * @param string $column
+     * @param array $values
+     * @return array
+     */
+    public static function whereIn(string $column, array $values): array
+    {
+        if (empty($values)) {
+            return [];
+        }
+
+        // build “?, ?, ?” placeholders
+        $placeholders = implode(',', array_fill(0, count($values), '?'));
+        $sql = sprintf(
+            'SELECT * FROM %s WHERE %s IN (%s)',
+            static::$table,
+            $column,
+            $placeholders
+        );
+
+        $stmt = Database::getInstance()->pdo()->prepare($sql);
+        $stmt->execute(array_values($values));  // positional bind
+        return $stmt->fetchAll(PDO::FETCH_CLASS, static::class);
+    }
+
+    /**
      * Save the model to the database (insert or update).
      *
      * @return $this Returns the model instance after saving.
