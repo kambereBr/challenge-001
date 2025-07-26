@@ -135,4 +135,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize
     renderPage(1);
   });
+
+  // Confirmation for delete forms
+  document.querySelectorAll('form[action*="/delete"]').forEach(form => {
+    form.addEventListener('submit', e => {
+      if (! window.confirm('Are you sure you want to delete this record?')) {
+        e.preventDefault();
+      }
+    });
+  });
 });
