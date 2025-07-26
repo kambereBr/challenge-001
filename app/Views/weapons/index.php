@@ -18,6 +18,7 @@
             <th class="sortable">Price</th>
             <th class="sortable">In Stock</th>
             <th class="sortable">Status</th>
+            <th class="sortable">Store</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -25,7 +26,7 @@
         <?php foreach ($weapons as $w): ?>
             <tr>
                 <td><?= $w->id ?></td>
-                <td><?= htmlspecialchars($w->name) ?></td>
+                <td><a href="/weapons/show/<?= $w->id ?>"><?= htmlspecialchars($w->name) ?></a></td>
                 <td><?= htmlspecialchars($w->type) ?></td>
                 <td><?= htmlspecialchars($w->caliber) ?></td>
                 <td><?= htmlspecialchars($w->serial_number) ?></td>
@@ -33,7 +34,11 @@
                 <td><?= htmlspecialchars($w->in_stock) ?></td>
                 <td><?= htmlspecialchars($w->status) ?></td>
                 <td>
-                    <a href="/weapons/edit/<?= $w->id ?>">Edit</a>
+                    <a href="/stores/show/<?= $w->store_id ?>"><?= isset($stores[$w->store_id]) ? htmlspecialchars($stores[$w->store_id]->name) : '&mdash;' ?></a>
+                </td>
+                <td>
+                    <a href="/weapons/edit/<?= $w->id ?>">Edit</a> | 
+                    <a href="/weapons/show/<?= $w->id ?>">View</a> |
                     <form method="post" action="/weapons/delete/<?= $w->id ?>" style="display:inline;">
                         <?= $this->csrfField() ?>
                         <button type="submit">Delete</button>
