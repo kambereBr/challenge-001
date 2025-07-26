@@ -22,7 +22,8 @@
                 <td><?= htmlspecialchars($u->username) ?></td>
                 <td><?= $u->role ?></td>
                 <td>
-                    <a href="/users/edit/<?= $u->id ?>">Edit</a>
+                    <a href="/users/edit/<?= $u->id ?>">Edit</a> | 
+                    <a href="/users/show/<?= $u->id ?>">View</a> | 
                     <form method="post" action="/users/delete/<?= $u->id ?>" style="display:inline;">
                         <?= $this->csrfField() ?>
                         <button type="submit">Delete</button>
