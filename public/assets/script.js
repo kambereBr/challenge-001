@@ -32,4 +32,22 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
+
+  // Search functionality
+  document.querySelectorAll('.table-filter').forEach(input => {
+    const tableId = input.dataset.table;
+    const table = document.getElementById(tableId);
+    const tbody = table.tBodies[0];
+
+    input.addEventListener('input', () => {
+      const term = input.value.trim().toLowerCase();
+      Array.from(tbody.rows).forEach(row => {
+        // join all cell text for that row
+        const text = Array.from(row.cells)
+          .map(cell => cell.innerText.trim().toLowerCase())
+          .join(' ');
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
+    });
+  });
 });
