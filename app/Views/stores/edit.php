@@ -3,19 +3,19 @@
     <div class="form-group">
         <?= $this->csrfField() ?>
         <label for="name">Name:</label>
-        <input id="name" name="name" value="<?= htmlspecialchars($store->name) ?>" required>
+        <input id="name" name="name" value="<?= htmlspecialchars($store->name) ?>">
 
         <label for="slug">Slug:</label>
-        <input id="slug" name="slug" value="<?= htmlspecialchars($store->slug) ?>" required>
+        <input id="slug" name="slug" value="<?= htmlspecialchars($store->slug) ?>">
 
         <label for="address_line1">Address Line 1:</label>
-        <input id="address_line1" name="address_line1" value="<?= htmlspecialchars($store->address_line1) ?>" required>
+        <input id="address_line1" name="address_line1" value="<?= htmlspecialchars($store->address_line1) ?>">
 
         <label for="address_line2">Address Line 2:</label>
         <input id="address_line2" name="address_line2" value="<?= htmlspecialchars($store->address_line2) ?>">
 
         <label for="city">City:</label>
-        <input id="city" name="city" value="<?= htmlspecialchars($store->city) ?>" required>
+        <input id="city" name="city" value="<?= htmlspecialchars($store->city) ?>">
 
         <label for="state_region">State/Region:</label>
         <input id="state_region" name="state_region" value="<?= htmlspecialchars($store->state_region) ?>">
