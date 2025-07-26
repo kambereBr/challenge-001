@@ -4,6 +4,7 @@ namespace Core;
 
 use App\Controllers\AuthController;
 use App\Models\User;
+use Core\Validator;
 
 abstract class Controller
 {
@@ -90,5 +91,37 @@ abstract class Controller
     {
         header('Location: ' . $url);
         exit;
+    }
+
+    protected function setSuccess(string $msg): void
+    {
+        $_SESSION['flash_success'] = $msg;
+    }
+
+    protected function setError(string $msg): void
+    {
+        $_SESSION['flash_error'] = $msg;
+    }
+
+    protected function displayFlash(): void
+    {
+        if (! empty($_SESSION['flash_success'])) {
+            echo '<div class="alert success">'.htmlspecialchars($_SESSION['flash_success']).'</div>';
+            unset($_SESSION['flash_success']);
+        }
+        if (! empty($_SESSION['flash_error'])) {
+            echo '<div class="alert error">'.htmlspecialchars($_SESSION['flash_error']).'</div>';
+            unset($_SESSION['flash_error']);
+        }
+    }
+
+    /**
+     * Validate input against rules.
+     * Returns array of errors or empty on success.
+     */
+    protected function validate(array $data, array $rules): array
+    {
+        $v = new Validator($data, $rules);
+        return $v->passes() ? [] : $v->errors();
     }
 }
