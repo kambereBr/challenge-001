@@ -42,6 +42,11 @@ $routes = [
     'GET|login'             => ['App\Controllers\AuthController', 'login'],
     'POST|login'            => ['App\Controllers\AuthController', 'login'],
     'GET|logout'            => ['App\Controllers\AuthController', 'logout'],
+
+    'GET|weapons/pdf/(\d+)'   => ['App\Controllers\WeaponController','pdf'],
+    'GET|weapons/pdf'         => ['App\Controllers\WeaponController','pdfAll'],
+    'GET|stores/pdf/(\d+)'    => ['App\Controllers\StoreController','pdf'],
+    'GET|stores/pdf'          => ['App\Controllers\StoreController','pdfAll'],
 ];
 
 foreach ($routes as $route => $handler) {
