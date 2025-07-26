@@ -154,6 +154,34 @@ th.sortable.desc::after {
   flex: 0 0 200px;
 }
 
+/* Pagination Controls */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.pagination button {
+  background-color: #fff;
+  color: #333 !important;
+  border: 1px solid #ccc;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.pagination button.active {
+  background-color: #333;
+  color: #fff !important;
+  border-color: #333;
+}
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+/* End of Pagination Controls */
+
 @media (max-width: 480px) {
   .form-grid {
     grid-template-columns: 1fr;
