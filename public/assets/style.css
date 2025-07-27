@@ -122,25 +122,30 @@ footer {
 th.sortable {
   cursor: pointer;
   position: relative;
+  padding-right: 1.5em;
 }
 th.sortable::after {
   content: '↕';
-  font-size: 0.7em;
-  color: #ccc;
   position: absolute;
   right: 0.5em;
   top: 50%;
   transform: translateY(-50%);
+  color: #999;
+  font-size: 0.8em;
+  transition: color 0.2s;
 }
-
 th.sortable.asc::after {
   content: '▲';
-  color: #fff;
+  color: white;
 }
-
 th.sortable.desc::after {
   content: '▼';
-  color: #fff;
+  color: white;
+}
+
+th.sortable a {
+  color: white !important;
+  text-decoration: none;
 }
 /* End of sortable columns styles */
 
