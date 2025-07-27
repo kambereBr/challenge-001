@@ -65,7 +65,7 @@ abstract class Model
         if ($user->role === 'super_admin') {
             return static::all();
         }
-        return static::all(['store_id' => $user->store_id]);
+        return static::all(['id' => $user->store_id]);
     }
 
     /**
