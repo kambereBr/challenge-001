@@ -109,8 +109,8 @@ class WeaponController extends Controller
     {
         $weapon = Weapon::findForUser($id, $this->currentUser);
         if (! $weapon) {
-            http_response_code(403);
-            exit;
+            $this->setError('Weapon not found.');
+            return $this->redirect('/weapons');
         }
         $stores = $this->currentUser->role === 'super_admin'
             ? Store::all()
@@ -122,8 +122,8 @@ class WeaponController extends Controller
     {
         $weapon = Weapon::findForUser($id, $this->currentUser);
         if (! $weapon) {
-            http_response_code(403);
-            exit;
+            $this->setError('Weapon not found.');
+            return $this->redirect('/weapons');
         }
         $this->verifyCsrf();
         $errors = $this->validate($_POST, [
@@ -169,8 +169,8 @@ class WeaponController extends Controller
     {
         $weapon = Weapon::findForUser($id, $this->currentUser);
         if (! $weapon) {
-            http_response_code(403);
-            exit;
+            $this->setError('Weapon not found.');
+            return $this->redirect('/weapons');
         }
         // also get its store
         $store = $weapon->store();
@@ -188,8 +188,8 @@ class WeaponController extends Controller
         try {
             $weapon = Weapon::findForUser($id, $this->currentUser);
             if (! $weapon) {
-                http_response_code(403);
-                exit;
+                $this->setError('Weapon not found.');
+                return $this->redirect('/weapons');
             }
             $weapon->delete($this->currentUser->id);
         } catch (\Exception $e) {
