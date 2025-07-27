@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
-use App\Controllers\StoreController;
+use App\Controllers\DashboardController;
 
 // Start routing
 $uri = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
@@ -9,8 +9,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // Handle root URL
 if ($uri === '') {
-    // Redirect or directly show stores index
-    return (new StoreController())->index();
+    return (new DashboardController())->index();
 }
 
 // Define routes: "METHOD|pattern" => [ControllerClass, "action"]
