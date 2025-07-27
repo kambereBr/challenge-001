@@ -70,6 +70,9 @@ class TableService
             $bindings[] = "%{$v}%";
         }
 
+        // Always exclude soft-deleted rows
+        $clauses[] = "`deleted_at` IS NULL";
+
         $whereSql = $clauses ? ' WHERE ' . implode(' AND ', $clauses) : '';
 
         // 3) Total count

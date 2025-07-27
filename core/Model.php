@@ -103,10 +103,11 @@ abstract class Model
         // build “?, ?, ?” placeholders
         $placeholders = implode(',', array_fill(0, count($values), '?'));
         $sql = sprintf(
-            'SELECT * FROM %s WHERE %s IN (%s)',
+            'SELECT * FROM %s WHERE %s IN (%s)%s',
             static::$table,
             $column,
-            $placeholders
+            $placeholders,
+            static::$softDelete ? ' AND deleted_at IS NULL' : ''
         );
 
         $stmt = Database::getInstance()->pdo()->prepare($sql);
