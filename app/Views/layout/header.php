@@ -11,14 +11,14 @@
 <body>
     <nav>
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/stores">Stores</a></li>
-            <li><a href="/weapons">Weapons</a></li>
-            <li><a href="/users">Users</a></li>
             <?php if (! empty($_SESSION['user_id'])): ?>
+                <li><a href="/">Home</a></li>
+                <li><a href="/stores">Stores</a></li>
+                <li><a href="/weapons">Weapons</a></li>
+                <li><a href="/users">Users</a></li>
                 <li><a href="/logout">Logout</a></li>
             <?php else: ?>
-                <li><a href="/login">Login</a></li>
+                <h3>Admin Tool</h3>
             <?php endif; ?>
         </ul>
     </nav>
