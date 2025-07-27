@@ -49,6 +49,7 @@ A lightweight PHP 7.2+ CRUD application for managing stores, weapons and users, 
     ```bash
     php scripts/init.php
     ```
+    This will create the SQLite database file (`database/database.sqlite`) and populate it with initial data. Run this command whenever you want to reset the database.
 4. **Start the built-in PHP server**
     ```bash
     php -S localhost:8000 -t public
