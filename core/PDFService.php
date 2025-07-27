@@ -11,15 +11,45 @@ class PDFService
      */
     protected static function initPDF(User $user, string $title): TCPDF
     {
-        $pdf = new TCPDF();
+        // Initialize TCPDF
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        // Document metadata
         $pdf->SetCreator('Admin Tool');
         $pdf->SetAuthor($user->username);
         $pdf->SetTitle($title);
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->setMargins(15, 15, 15);
-        $pdf->AddPage();
+
+        // Header & footer fonts
+        $pdf->setHeaderFont(['helvetica', '', 12]);
+        $pdf->setFooterFont(['helvetica', '', 8]);
+
+        // Set margins: left, top (including space for header), right
+        $pdf->SetMargins(15, 25, 15);
+        // Header margin, Footer margin
+        $pdf->SetHeaderMargin(10);
+        $pdf->SetFooterMargin(15);
+
+        // Enable auto page breaks (bottom margin)
+        $pdf->SetAutoPageBreak(true, 20);
+
+        // Branded header: no logo, left title, right subtitle, custom colors
+        $pdf->SetHeaderData(
+            '',      // no logo
+            0,
+            'Admin Tool',    // header title
+            '',         // header subtitle
+            [0, 78, 121],   // text color (dark blue)
+            [0, 78, 121]    // line color
+        );
+        $pdf->setPrintHeader(true);
+        $pdf->setPrintFooter(true);
+
+        // Default font for content
         $pdf->SetFont('helvetica', '', 10);
+
+        // Add first page
+        $pdf->AddPage();
+
         return $pdf;
     }
 
