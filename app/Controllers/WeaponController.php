@@ -225,7 +225,20 @@ class WeaponController extends Controller
                 'Store' => isset($store) ? htmlspecialchars($store->name) : '—',
                 'Created At' => $weapon->created_at,
             ],
-            $this->currentUser
+            $this->currentUser,
+            'Store Details',
+            ['Name', 'Address', 'City', 'State/Region', 'Country', 'Phone', 'Email'],
+            array_map(function($s) {
+                return [
+                    htmlspecialchars($s->name),
+                    htmlspecialchars($s->address_line1),
+                    htmlspecialchars($s->city),
+                    htmlspecialchars($s->state_region),
+                    htmlspecialchars($s->country),
+                    htmlspecialchars($s->phone),
+                    htmlspecialchars($s->email)
+                ];
+            }, [$store])
         );
     }
 
