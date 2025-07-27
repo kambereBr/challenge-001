@@ -11,56 +11,49 @@
   <strong>Email:</strong> <?= htmlspecialchars($store->email) ?>
 </p>
 <p>
-  <a class="btn" href="/stores/pdf/<?= $store->id ?>" target="_blank">Print PDF</a> 
+  <a class="a-btn" href="/stores/pdf/<?= $store->id ?>" target="_blank">Print PDF</a> 
 </p>
 
 <h2>Weapons in this Store</h2>
 <?php if (count($weapons) === 0): ?>
   <p>No weapons found.</p>
 <?php else: ?>
-  <div class="table-search">
-    <label>
-      Search:
-      <input type="text" class="table-filter" data-table="store-weapons-table" placeholder="Type to filter…">
-    </label>
-  </div>
   <table id="store-weapons-table">
+    <?= Core\ViewHelper::renderFilterForm($meta, '', ['type' => array_column($weapons, 'type', 'type'), 'status' => array_column($weapons, 'status', 'status')]) ?>
     <thead>
-      <tr>
-        <th class="sortable">ID</th>
-        <th class="sortable">Name</th>
-        <th class="sortable">Type</th>
-        <th class="sortable">Caliber</th>
-        <th class="sortable">Serial Number</th>
-        <th class="sortable">Price</th>
-        <th class="sortable">In Stock</th>
-        <th class="sortable">Status</th>
-        <th>Actions</th>
-      </tr>
+        <tr>
+            <th>#</th>
+            <th class="sortable" data-column="name"><?= Core\ViewHelper::sortLink($meta, 'name','Name') ?></th>
+            <th class="sortable" data-column="type"><?= Core\ViewHelper::sortLink($meta, 'type','Type') ?></th>
+            <th class="sortable" data-column="caliber"><?= Core\ViewHelper::sortLink($meta, 'caliber','Caliber') ?></th>
+            <th class="sortable" data-column="serial_number"><?= Core\ViewHelper::sortLink($meta, 'serial_number','Serial Number') ?></th>
+            <th class="sortable" data-column="price"><?= Core\ViewHelper::sortLink($meta, 'price','Price') ?></th>
+            <th class="sortable" data-column="in_stock"><?= Core\ViewHelper::sortLink($meta, 'in_stock', 'In Stock') ?></th>
+            <th class="sortable" data-column="status"><?= Core\ViewHelper::sortLink($meta, 'status', 'Status') ?></th>
+            <th>Actions</th>
+        </tr>
     </thead>
     <tbody>
     <?php foreach ($weapons as $w): ?>
-      <tr>
-        <td data-label="ID"><?= $w->id ?></td>
-        <td data-label="Name">
-          <a href="/weapons/show/<?= $w->id ?>"><?= htmlspecialchars($w->name) ?></a>
-        </td>
-        <td data-label="Type"><?= htmlspecialchars($w->type) ?></td>
-        <td data-label="Caliber"><?= htmlspecialchars($w->caliber) ?></td>
-        <td data-label="Serial Number"><?= htmlspecialchars($w->serial_number) ?></td>
-        <td data-label="Price"><?= htmlspecialchars($w->price) ?></td>
-        <td data-label="In Stock"><?= htmlspecialchars($w->in_stock) ?></td>
-        <td data-label="Status"><?= htmlspecialchars($w->status) ?></td>
-        <td data-label="Actions">
-            <a href="/weapons/show/<?= $w->id ?>">View</a> | 
-            <a class="btn" href="/weapons/pdf/<?= $w->id ?>" target="_blank">PDF</a> |
-            <a href="/weapons/edit/<?= $w->id ?>">Edit</a> | 
-            <form method="post" action="/weapons/delete/<?= $w->id ?>" style="display:inline;">
-                <?= $this->csrfField() ?>
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-      </tr>
+       <tr>
+                <td><?= $w->id ?></td>
+                <td data-label="Name"><a href="/weapons/show/<?= $w->id ?>"><?= htmlspecialchars($w->name) ?></a></td>
+                <td><?= htmlspecialchars($w->type) ?></td>
+                <td><?= htmlspecialchars($w->caliber) ?></td>
+                <td><?= htmlspecialchars($w->serial_number) ?></td>
+                <td><?= htmlspecialchars($w->price) ?></td>
+                <td><?= htmlspecialchars($w->in_stock) ?></td>
+                <td><?= htmlspecialchars($w->status) ?></td>
+                <td>
+                    <a href="/weapons/edit/<?= $w->id ?>">Edit</a> | 
+                    <a href="/weapons/show/<?= $w->id ?>">View</a> |
+                    <a class="btn" href="/weapons/pdf/<?= $w->id ?>" target="_blank">PDF</a> |
+                    <form method="post" action="/weapons/delete/<?= $w->id ?>" style="display:inline;">
+                        <?= $this->csrfField() ?>
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
     <?php endforeach; ?>
     </tbody>
   </table>
