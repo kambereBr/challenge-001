@@ -69,10 +69,13 @@ abstract class Model
     }
 
     /**
-     * Get records for the user's store, or all if super admin.
+     * Retrieves records based on the user's store association.
      *
-     * @param User $user
-     * @return array
+     * If the user has the 'super_admin' role, all records are returned.
+     * Otherwise, only records associated with the user's store are returned.
+     *
+     * @param User $user The user whose store association is used for filtering.
+     * @return array The list of records matching the criteria.
      */
     public static function findByStore(User $user)
     {

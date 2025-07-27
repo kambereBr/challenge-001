@@ -59,6 +59,10 @@ class StoreController extends Controller
     public function create()
     {
         $this->authorize(['super_admin']);
+        if ($this->currentUser->role !== 'super_admin') {
+            $this->setError('You do not have permission to create stores.');
+            return $this->redirect('/stores');
+        }
         $this->view('stores/create');
     }
 
