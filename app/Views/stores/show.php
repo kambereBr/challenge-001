@@ -45,12 +45,20 @@
                 <td><?= htmlspecialchars($w->in_stock) ?></td>
                 <td><?= htmlspecialchars($w->status) ?></td>
                 <td>
-                    <a href="/weapons/edit/<?= $w->id ?>">Edit</a> | 
-                    <a href="/weapons/show/<?= $w->id ?>">View</a> |
-                    <a class="btn" href="/weapons/pdf/<?= $w->id ?>" target="_blank">PDF</a> |
+                    <a href="/weapons/edit/<?= $w->id ?>" title="Edit">
+                        <span class="icon-edit" aria-hidden="true">&#9998;</span>
+                    </a> | 
+                    <a href="/weapons/show/<?= $w->id ?>" title="View">
+                        <span class="icon-view" aria-hidden="true">&#128065;</span>
+                    </a> |
+                    <a class="btn" href="/weapons/pdf/<?= $w->id ?>" target="_blank" title="Print PDF">
+                        <span class="icon-print" aria-hidden="true">&#128424;</span>
+                    </a> |
                     <form method="post" action="/weapons/delete/<?= $w->id ?>" style="display:inline;">
                         <?= $this->csrfField() ?>
-                        <button type="submit">Delete</button>
+                        <button class="btn-delete" type="submit" title="Delete">
+                            <span class="icon-delete" aria-hidden="true">&#128465;</span>
+                        </button>
                     </form>
                 </td>
             </tr>

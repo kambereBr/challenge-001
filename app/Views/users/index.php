@@ -1,13 +1,7 @@
 <h1>Users</h1>
-<div>
+<p>
     <a class="a-btn" href="/users/create">+ New User</a>
-</div>
-<div class="table-search">
-  <label>
-    Search:
-    <input type="text" class="table-filter" data-table="users-table" placeholder="Type to filter…">
-  </label>
-</div>
+</p>
 <table id="users-table">
     <thead>
         <tr>
@@ -24,11 +18,17 @@
                 <td><?= htmlspecialchars($u->username) ?></td>
                 <td><?= $u->role ?></td>
                 <td>
-                    <a href="/users/edit/<?= $u->id ?>">Edit</a> | 
-                    <a href="/users/show/<?= $u->id ?>">View</a> | 
+                    <a href="/users/edit/<?= $u->id ?>" title="Edit">
+                        <span class="icon-edit" aria-hidden="true">&#9998;</span>
+                    </a> | 
+                    <a href="/users/show/<?= $u->id ?>" title="View">
+                        <span class="icon-view" aria-hidden="true">&#128065;</span>
+                    </a> | 
                     <form method="post" action="/users/delete/<?= $u->id ?>" style="display:inline;">
                         <?= $this->csrfField() ?>
-                        <button type="submit">Delete</button>
+                        <button class="btn-delete" type="submit" title="Delete">
+                            <span class="icon-delete" aria-hidden="true">&#128465;</span>
+                        </button>
                     </form>
                 </td>
             </tr>
