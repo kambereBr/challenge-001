@@ -5,21 +5,55 @@ namespace App\Controllers;
 use Core\Controller;
 use App\Models\Store;
 use Core\PDFService;
+use Core\TableService;
+use Core\Database;
+use PDO;
+use App\Models\Weapon;
 
 class StoreController extends Controller
 {
     public function index()
     {
-        if ($this->currentUser->role === 'super_admin') {
-            $stores = Store::all();
-        } else {
-            $stores = Store::all(['id' => $this->currentUser->store_id]);
+        // 1) Paginate, sort, and filter stores
+        $listing = TableService::paginate(
+            'stores',
+            Store::class,
+            ['id', 'name','slug','address_line1','address_line2','city','state_region','country','phone','email'],   // free-text search columns
+            ['id', 'name','slug','city','country','state_region','phone','email'], // sortable columns
+            5,  // per-page
+            $this->currentUser->role === 'super_admin'
+                ? []
+                : ['id' => $this->currentUser->store_id] // scope to own store
+        );
+
+        $stores = $listing['items'];
+        $meta   = $listing['meta'];
+
+        // 2) Eager-load weapon counts to avoid N+1
+        $db = Database::getInstance()->pdo();
+        $ids = [];
+        foreach ($stores as $store) {
+            $ids[] = $store->id;
         }
         $totalWeapons = [];
-        foreach ($stores as $store) {
-            $totalWeapons[$store->id] = count($store->weapons());
+        if (! empty($ids)) {
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+            $sql = "SELECT store_id, COUNT(*) AS cnt FROM weapons WHERE store_id IN ({$placeholders}) GROUP BY store_id";
+            $stmt = $db->prepare($sql);
+            $stmt->execute($ids);
+            $counts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+            // fill missing with 0
+            foreach ($ids as $id) {
+                $totalWeapons[$id] = $counts[$id] ?? 0;
+            }
         }
-        $this->view('stores/index', ['stores' => $stores, 'totalWeapons' => $totalWeapons]);
+
+        // 3) Render view
+        $this->view('stores/index', [
+            'stores'       => $stores,
+            'totalWeapons' => $totalWeapons,
+            'meta'         => $meta,
+        ]);
     }
 
     public function create()
@@ -86,7 +120,8 @@ class StoreController extends Controller
     {
         $store = Store::findForUser($id, $this->currentUser);
         if (! $store) {
-            http_response_code(403); exit;
+            $this->setError('Store not found.');
+            return $this->redirect('/stores');
         }
         $this->view('stores/edit', ['store' => $store]);
     }
@@ -95,7 +130,8 @@ class StoreController extends Controller
     {
         $store = Store::findForUser($id, $this->currentUser);
         if (! $store) {
-            http_response_code(403); exit;
+            $this->setError('Store not found.');
+            return $this->redirect('/stores');
         }
         $this->verifyCsrf();
         $errors = $this->validate($_POST, [
@@ -137,14 +173,28 @@ class StoreController extends Controller
     {
         $store = Store::findForUser($id, $this->currentUser);
         if (! $store) {
-            http_response_code(403);
-            exit;
+            $this->setError('Store not found.');
+            return $this->redirect('/stores');
         }
-        // fetch all weapons for this store
-        $weapons = $store->weapons();
+
+        // Paginate, sort, and filter this store's weapons
+        $listing = TableService::paginate(
+            'weapons',
+            Weapon::class,
+            ['name','type','caliber','serial_number'], // filterable columns
+            ['id','name','type','caliber','price'],     // sortable columns
+            10,                                         // per-page
+            ['store_id' => $store->id]                  // scope to this store
+        );
+
+        $weapons = $listing['items'];
+        $meta    = $listing['meta'];
+
+        // Render view
         $this->view('stores/show', [
-          'store'   => $store,
-          'weapons' => $weapons,
+            'store'   => $store,
+            'weapons' => $weapons,
+            'meta'    => $meta,
         ]);
     }
 
@@ -155,8 +205,13 @@ class StoreController extends Controller
         try {
             $store = Store::find($id);
             if (! $store) {
-                http_response_code(404);
-                exit;
+                $this->setError('Store not found.');
+                return $this->redirect('/stores');
+            }
+            // find all weapons in this store and delete them
+            $weapons = $store->weapons();
+            foreach ($weapons as $weapon) {
+                $weapon->delete($this->currentUser->id);
             }
             $store->delete($this->currentUser->id);
         } catch (\PDOException $e) {
@@ -164,7 +219,7 @@ class StoreController extends Controller
             $this->redirect('/stores');
         }
 
-        $this->setSuccess('Store “'.htmlspecialchars($store->name).'” deleted successfully.');       
+        $this->setSuccess('Store “'.htmlspecialchars($store->name).'” deleted successfully with all its weapons.');       
         $this->redirect('/stores');
     }
 
