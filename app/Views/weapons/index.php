@@ -1,12 +1,14 @@
 <h1>Weapons</h1>
-<a href="/weapons/create">+ New Weapon</a>
-<a href="/stores">View Stores</a>
-<a class="btn" href="/weapons/pdf" target="_blank">Print List in PDF</a>
+<div class="actions-btn">
+    <a href="/weapons/create">+ New Weapon</a>
+    <a href="/stores">View Stores</a>
+    <a class="btn" href="/weapons/pdf" target="_blank">Print List in PDF</a>
+</div>
 <table id="weapons-table">
     <?= Core\ViewHelper::renderFilterForm($meta, '', ['type' => array_column($weapons, 'type', 'type'), 'status' => array_column($weapons, 'status', 'status')]) ?>
     <thead>
         <tr>
-            <th>ID</th>
+            <th>#</th>
             <th class="sortable" data-column="name"><?= Core\ViewHelper::sortLink($meta, 'name','Name') ?></th>
             <th class="sortable" data-column="type"><?= Core\ViewHelper::sortLink($meta, 'type','Type') ?></th>
             <th class="sortable" data-column="caliber"><?= Core\ViewHelper::sortLink($meta, 'caliber','Caliber') ?></th>

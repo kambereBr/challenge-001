@@ -1,26 +1,24 @@
 <h1>Stores</h1>
-<a href="/stores/create">+ New Store</a> 
-<a href="/weapons">View Weapons</a> 
-<a class="btn" href="/stores/pdf" target="_blank">Print List in PDF</a>
-<div class="table-search">
-  <label>
-    Search:
-    <input type="text" class="table-filter" data-table="stores-table" placeholder="Type to filter…">
-  </label>
+<div class="actions-btn">
+    <a href="/stores/create">+ New Store</a> 
+    <a href="/weapons">View Weapons</a> 
+    <a class="btn" href="/stores/pdf" target="_blank">Print List in PDF</a>
 </div>
+
 <table id="stores-table">
+    <?= Core\ViewHelper::renderFilterForm($meta, '', ['city' => array_column($stores, 'city', 'city'), 'country' => array_column($stores, 'country', 'country'), 'state_region' => array_column($stores, 'state_region', 'state_region')]) ?>
     <thead>
         <tr>
-            <th class="sortable">ID</th>
-            <th class="sortable">Name</th>
-            <th class="sortable">Slug</th>
-            <th class="sortable">Address</th>
-            <th class="sortable">City</th>
-            <th class="sortable">State/Region</th>
-            <th class="sortable">Country</th>
-            <th class="sortable">Phone</th>
-            <th class="sortable">Email</th>
-            <th class="sortable">Total Weapons</th>
+            <th>#</th>
+            <th class="sortable" data-column="name"><?= Core\ViewHelper::sortLink($meta, 'name','Name') ?></th>
+            <th class="sortable" data-column="slug"><?= Core\ViewHelper::sortLink($meta, 'slug','Slug') ?></th>
+            <th class="sortable" data-column="address_line1"><?= Core\ViewHelper::sortLink($meta, 'address_line1','Address') ?></th>
+            <th class="sortable" data-column="city"><?= Core\ViewHelper::sortLink($meta, 'city','City') ?></th>
+            <th class="sortable" data-column="state_region"><?= Core\ViewHelper::sortLink($meta, 'state_region','State/Region') ?></th>
+            <th class="sortable" data-column="country"><?= Core\ViewHelper::sortLink($meta, 'country','Country') ?></th>
+            <th class="sortable" data-column="phone"><?= Core\ViewHelper::sortLink($meta, 'phone','Phone') ?></th>
+            <th class="sortable" data-column="email"><?= Core\ViewHelper::sortLink($meta, 'email','Email') ?></th>
+            <th class="sortable" data-column="total_weapons"><?= Core\ViewHelper::sortLink($meta, 'total_weapons','Total Weapons') ?></th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -38,15 +36,24 @@
                 <td><?= htmlspecialchars($store->email) ?></td>
                 <td><?= $totalWeapons[$store->id] ?? 0 ?></td>
                 <td>
-                    <a href="/stores/edit/<?= $store->id ?>">Edit</a> | 
-                    <a href="/stores/show/<?= $store->id ?>">View</a> | 
-                    <a class="btn" href="/stores/pdf/<?= $store->id ?>" target="_blank">PDF</a> |
+                    <a href="/stores/edit/<?= $store->id ?>" title="Edit">
+                        <span class="icon-edit" aria-hidden="true">&#9998;</span>
+                    </a> |  
+                    <a href="/stores/show/<?= $store->id ?>" title="View">
+                        <span class="icon-view" aria-hidden="true">&#128065;</span>
+                    </a> | 
+                    <a class="btn" href="/stores/pdf/<?= $store->id ?>" target="_blank" title="Print PDF">
+                        <span class="icon-print" aria-hidden="true">&#128424;</span>
+                    </a> | 
                     <form method="post" action="/stores/delete/<?= $store->id ?>" style="display:inline;">
                         <?= $this->csrfField() ?>
-                        <button type="submit">Delete</button>
+                        <button class="btn-delete" type="submit" title="Delete">
+                            <span class="icon-delete" aria-hidden="true">&#128465;</span>
+                        </button>
                     </form>
                 </td>
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+<?= Core\ViewHelper::renderPagination($meta) ?>

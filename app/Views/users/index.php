@@ -1,5 +1,7 @@
 <h1>Users</h1>
-<a href="/users/create">+ New User</a>
+<div>
+    <a class="a-btn" href="/users/create">+ New User</a>
+</div>
 <div class="table-search">
   <label>
     Search:
