@@ -59,9 +59,8 @@ abstract class Controller
     protected function authorize(array $roles): void
     {
         if (! in_array($this->currentUser->role, $roles)) {
-            http_response_code(403);
-            echo '403 Forbidden';
-            exit;
+            $this->setError('You do not have permission to access this page.');
+            $this->redirect('/');
         }
     }
 
