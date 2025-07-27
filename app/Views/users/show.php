@@ -46,8 +46,9 @@
         <td data-label="In Stock"><?= htmlspecialchars($w->in_stock) ?></td>
         <td data-label="Status"><?= htmlspecialchars($w->status) ?></td>
         <td data-label="Actions">
-            <a href="/weapons/show/<?= $w->id ?>">View</a> | 
             <a href="/weapons/edit/<?= $w->id ?>">Edit</a> | 
+            <a href="/weapons/show/<?= $w->id ?>">View</a> | 
+            <a href="/weapons/pdf/<?= $w->id ?>" target="_blank">PDF</a> |  
             <form method="post" action="/weapons/delete/<?= $w->id ?>" style="display:inline;">
                 <?= $this->csrfField() ?>
                 <button type="submit">Delete</button>
