@@ -47,7 +47,7 @@ class WeaponController extends Controller
         $this->authorize(['super_admin', 'store_user']);
         $stores = $this->currentUser->role === 'super_admin'
             ? Store::all()
-            : [$this->currentUser->store];
+            : [Store::find($this->currentUser->store_id)];
         $this->view('weapons/create', ['stores' => $stores]);
     }
 
