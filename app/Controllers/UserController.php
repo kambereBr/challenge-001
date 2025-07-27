@@ -74,6 +74,10 @@ class UserController extends Controller
     {
         $this->authorize(['super_admin']);
         $user = User::find($id);
+        if (! $user) {
+            $this->setError('User not found.');
+            return $this->redirect('/users');
+        }
         $stores = $this->currentUser->role === 'super_admin'
             ? Store::all()
             : [$this->currentUser->store];
@@ -107,6 +111,10 @@ class UserController extends Controller
 
         try {
             $user = User::find($id);
+            if (! $user) {
+                $this->setError('User not found.');
+                return $this->redirect('/users');
+            }
             $user->username = $username;
             if (! empty($password)) {
                 $user->password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -130,8 +138,8 @@ class UserController extends Controller
         $this->authorize(['super_admin']); // only super can view arbitrary users
         $user = User::find($id);
         if (! $user) {
-            http_response_code(404);
-            exit;
+            $this->setError('User not found.');
+            return $this->redirect('/users');
         }
         // if user is a store_user, list that store’s weapons
         $weapons = [];
@@ -151,8 +159,8 @@ class UserController extends Controller
         try {
             $user = User::find($id);
             if (! $user) {
-                http_response_code(404);
-                exit;
+                $this->setError('User not found.');
+                return $this->redirect('/users');
             }
             if ($user->id === $this->currentUser->id) {
                 $this->setError('Cannot delete your own account');
