@@ -60,7 +60,7 @@ A lightweight PHP 7.2+ CRUD application for managing stores, weapons and users, 
      - username: `admin`
      - password: `admin`
    - **Store User**: 
-     - username: `user_test`
+     - username: `test_user`
      - password: `test`
 7. **Usage**
    - **Dashboard**: View store and user statistics.
