@@ -69,6 +69,20 @@ abstract class Model
     }
 
     /**
+     * Get records for the user's store, or all if super admin.
+     *
+     * @param User $user
+     * @return array
+     */
+    public static function findByStore(User $user)
+    {
+        if ($user->role === 'super_admin') {
+            return static::all();
+        }
+        return static::all(['store_id' => $user->store_id]);
+    }
+
+    /**
      * Find a record by ID if accessible by the user.
      *
      * @param mixed $id

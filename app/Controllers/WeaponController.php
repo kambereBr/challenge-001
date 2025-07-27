@@ -246,7 +246,7 @@ class WeaponController extends Controller
     // Bulk PDF of all weapons (scoped)
     public function pdfAll()
     {
-        $weapons = Weapon::allForUser($this->currentUser);
+        $weapons = Weapon::findByStore($this->currentUser);
         if (count($weapons) === 0) {
             $this->setError('No weapons found for PDF generation.');
             return $this->redirect('/weapons');
