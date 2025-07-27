@@ -37,7 +37,8 @@ INSERT INTO weapons (store_id, name, type, caliber, serial_number, price, in_sto
 (1, 'Classic Revolver', 'handgun', '.357', 'SN1004', 610.00, 1, 'active', datetime('now'), datetime('now'));
 
 INSERT INTO users (store_id, username, password_hash, role, created_at, updated_at) VALUES
-(NULL, 'admin', '$2y$12$U7lmzz8VcSCBWZJSWwUNgutUQX1JuiRFxj4en0JnKHQUJ834qPPy2', 'super_admin', datetime('now'), datetime('now'));
+(NULL, 'admin', '$2y$12$U7lmzz8VcSCBWZJSWwUNgutUQX1JuiRFxj4en0JnKHQUJ834qPPy2', 'super_admin', datetime('now'), datetime('now')),
+(1, 'test_user', '$2y$10$kmpYbIKjZAQVFos2tvVQ0eX0p8LjtUMVTbWcbK97GiyLYX8lqnYBe', 'store_user', datetime('now'), datetime('now'));
 
 COMMIT;
 SQL;
