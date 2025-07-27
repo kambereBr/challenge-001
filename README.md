@@ -33,8 +33,12 @@ A lightweight PHP 7.2+ CRUD application for managing stores, weapons and users, 
 1. **Clone the repository**  
    ```bash
    git clone --branch bruno/weapons-store --single-branch https://github.com/kambereBr/challenge-001.git
-   cd challenge-001
    ```
+
+    ```bash
+    cd challenge-001
+    ```
+
 2. **Install PHP dependencies**
     ```bash
     composer install
