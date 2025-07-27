@@ -2,24 +2,19 @@
 <a href="/weapons/create">+ New Weapon</a>
 <a href="/stores">View Stores</a>
 <a class="btn" href="/weapons/pdf" target="_blank">Print List in PDF</a>
-<div class="table-search">
-  <label>
-    Search:
-    <input type="text" class="table-filter" data-table="weapons-table" placeholder="Type to filter…">
-  </label>
-</div>
 <table id="weapons-table">
+    <?= Core\ViewHelper::renderFilterForm($meta, '', ['type' => array_column($weapons, 'type', 'type'), 'status' => array_column($weapons, 'status', 'status')]) ?>
     <thead>
         <tr>
-            <th class="sortable">ID</th>
-            <th class="sortable">Name</th>
-            <th class="sortable">Type</th>
-            <th class="sortable">Caliber</th>
-            <th class="sortable">Serial Number</th>
-            <th class="sortable">Price</th>
-            <th class="sortable">In Stock</th>
-            <th class="sortable">Status</th>
-            <th class="sortable">Store</th>
+            <th>ID</th>
+            <th class="sortable" data-column="name"><?= Core\ViewHelper::sortLink($meta, 'name','Name') ?></th>
+            <th class="sortable" data-column="type"><?= Core\ViewHelper::sortLink($meta, 'type','Type') ?></th>
+            <th class="sortable" data-column="caliber"><?= Core\ViewHelper::sortLink($meta, 'caliber','Caliber') ?></th>
+            <th class="sortable" data-column="serial_number"><?= Core\ViewHelper::sortLink($meta, 'serial_number','Serial Number') ?></th>
+            <th class="sortable" data-column="price"><?= Core\ViewHelper::sortLink($meta, 'price','Price') ?></th>
+            <th class="sortable" data-column="in_stock"><?= Core\ViewHelper::sortLink($meta, 'in_stock', 'In Stock') ?></th>
+            <th class="sortable" data-column="status"><?= Core\ViewHelper::sortLink($meta, 'status', 'Status') ?></th>
+            <th class="sortable" data-column="store"><?= Core\ViewHelper::sortLink($meta, 'store_id', 'Store') ?></th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -27,7 +22,7 @@
         <?php foreach ($weapons as $w): ?>
             <tr>
                 <td><?= $w->id ?></td>
-                <td><a href="/weapons/show/<?= $w->id ?>"><?= htmlspecialchars($w->name) ?></a></td>
+                <td data-label="Name"><a href="/weapons/show/<?= $w->id ?>"><?= htmlspecialchars($w->name) ?></a></td>
                 <td><?= htmlspecialchars($w->type) ?></td>
                 <td><?= htmlspecialchars($w->caliber) ?></td>
                 <td><?= htmlspecialchars($w->serial_number) ?></td>
@@ -50,3 +45,4 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<?= Core\ViewHelper::renderPagination($meta) ?>
