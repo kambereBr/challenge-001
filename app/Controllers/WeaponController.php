@@ -114,7 +114,7 @@ class WeaponController extends Controller
         }
         $stores = $this->currentUser->role === 'super_admin'
             ? Store::all()
-            : [$this->currentUser->store];
+            : [Store::find($this->currentUser->store_id)];
         $this->view('weapons/edit', ['weapon' => $weapon, 'stores' => $stores]);
     }
 
