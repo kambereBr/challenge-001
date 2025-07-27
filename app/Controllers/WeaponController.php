@@ -5,20 +5,41 @@ use Core\Controller;
 use App\Models\Weapon;
 use App\Models\Store;
 use Core\PDFService;
+use Core\TableService;
 
 class WeaponController extends Controller
 {
     public function index()
     {
-        $weapons = Weapon::allForUser($this->currentUser);
+        // 1) Fetch paginated, filtered, sorted weapons
+        $listing = TableService::paginate(
+            'weapons',
+            \App\Models\Weapon::class,
+            ['id', 'name', 'type', 'caliber', 'serial_number', 'price', 'in_stock', 'status'], // filterable columns
+            ['id', 'name', 'type', 'caliber', 'serial_number', 'price', 'in_stock', 'status', 'store'], // sortable columns
+            5,    // per-page
+            $this->currentUser->role === 'super_admin'
+                ? []
+                : ['store_id' => $this->currentUser->store_id]
+        );
+
+        $weapons = $listing['items'];
+        $meta    = $listing['meta'];
+
+        // 2) Eager-load stores to avoid N+1
         $ids = array_unique(array_column($weapons, 'store_id'));
         $storesRaw = Store::whereIn('id', $ids);
-        // Convert to associative array for easier access
         $stores = [];
         foreach ($storesRaw as $s) {
             $stores[$s->id] = $s;
         }
-        $this->view('weapons/index', ['weapons' => $weapons, 'stores' => $stores]);
+
+        // 3) Render view with everything
+        $this->view('weapons/index', [
+            'weapons' => $weapons,
+            'stores'  => $stores,
+            'meta'    => $meta,
+        ]);
     }
 
     public function create()
