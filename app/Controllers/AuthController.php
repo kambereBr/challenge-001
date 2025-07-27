@@ -13,7 +13,7 @@ class AuthController extends Controller
             $user = User::all(['username'=>$_POST['username']])[0] ?? null;
             if ($user && password_verify($_POST['password'], $user->password_hash)) {
                 $_SESSION['user_id'] = $user->id;
-                return $this->redirect('/stores');
+                return $this->redirect('/');
             }
             $error = 'Invalid credentials';
         }
