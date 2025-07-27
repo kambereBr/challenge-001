@@ -15,9 +15,9 @@ class AuthController extends Controller
                 $_SESSION['user_id'] = $user->id;
                 return $this->redirect('/');
             }
-            $error = 'Invalid credentials';
+            $this->setError('Invalid credentials');
         }
-        $this->view('auth/login', ['error'=>$error ?? null]);
+        $this->view('auth/login');
     }
 
     public function logout()
