@@ -20,7 +20,6 @@
         <h3>Users</h3>
         <p><?= htmlspecialchars($usersCount) ?></p>
         <a href="/users">Manage</a>
-        <a class="btn" href="/users/pdf" target="_blank">Print All</a>
     </div>
   <?php endif; ?>
 </div>

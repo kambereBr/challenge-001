@@ -11,12 +11,6 @@
 
 <?php if (!empty($weapons)): ?>
   <h2>Weapons Available to This User</h2>
-  <div class="table-search">
-    <label>
-      Search:
-      <input type="text" class="table-filter" data-table="user-weapons-table" placeholder="Type to filter…">
-    </label>
-  </div>
   <table id="user-weapons-table">
     <thead>
       <tr>
